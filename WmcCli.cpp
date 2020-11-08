@@ -30,6 +30,7 @@ const char* WmcCli::Ac           = "ac";
 const char* WmcCli::Dump         = "dump";
 const char* WmcCli::Settings     = "settings";
 const char* WmcCli::Reset        = "reset";
+const char* WmcCli::PulseSwitch  = "pulse";
 #if APP_CFG_UC == APP_CFG_UC_ESP8266
 const char* WmcCli::Ssid          = "ssid ";
 const char* WmcCli::Password      = "password ";
@@ -218,6 +219,20 @@ void WmcCli::Process(void)
     }
 #endif
 #if APP_CFG_UC == APP_CFG_UC_ESP8266
+    else if (strncmp(m_bufferRx, PulseSwitch, strlen(PulseSwitch)) == 0)
+    {
+        if (m_LocStorage.PulseSwitchInvertGet() == false)
+        {
+            m_LocStorage.PulseSwitchInvertSet(1);
+            Serial.println("Pulse switch direction inverted.");
+        }
+        else
+        {
+            m_LocStorage.PulseSwitchInvertSet(0);
+            Serial.println("Pulse switch direction not inverted.");
+        }
+        send_event(Event);
+    }
     else if (strncmp(m_bufferRx, StaticIp, strlen(StaticIp)) == 0)
     {
         if (StaticIpChange() == true)
@@ -276,6 +291,7 @@ void WmcCli::HelpScreen(void)
     Serial.println("emergency x     : Set power off (0) or emergency stop (1).");
     Serial.println("list            : Show all programmed locs.");
     Serial.println("dump            : Dump data for backup.");
+    Serial.println("pulse           : Invert pulse switch direction.");
 #if APP_CFG_UC == APP_CFG_UC_ESP8266
     Serial.println("adc             : Invalidate ADC button values.");
     Serial.println("buttons         : Show ADC value for each button.");

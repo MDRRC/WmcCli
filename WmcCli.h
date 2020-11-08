@@ -196,6 +196,7 @@ private:
     static const char* Dump;
     static const char* Settings;
     static const char* Reset;
+    static const char* PulseSwitch;
 #if APP_CFG_UC == APP_CFG_UC_ESP8266
     static const char* Ssid;
     static const char* Password;
