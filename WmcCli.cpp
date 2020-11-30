@@ -69,8 +69,8 @@ void WmcCli::Init(LocLib LocLib, LocStorage LocStorage)
 }
 
 /***********************************************************************************************************************
- * Read data from serial port, if CR is received check the received data and perform action if valid command is
- * received.
+ * Read data from serial port, if CR is received check the received data and
+ * perform action if valid command is received.
  */
 void WmcCli::Update(void)
 {
@@ -169,7 +169,6 @@ void WmcCli::Process(void)
             send_event(Event);
         }
     }
-
 #if APP_CFG_UC == APP_CFG_UC_ESP8266
     else if (strncmp(m_bufferRx, Ssid, strlen(Ssid)) == 0)
     {
@@ -218,7 +217,6 @@ void WmcCli::Process(void)
         nvic_sys_reset();
     }
 #endif
-#if APP_CFG_UC == APP_CFG_UC_ESP8266
     else if (strncmp(m_bufferRx, PulseSwitch, strlen(PulseSwitch)) == 0)
     {
         if (m_LocStorage.PulseSwitchInvertGet() == false)
@@ -233,6 +231,7 @@ void WmcCli::Process(void)
         }
         send_event(Event);
     }
+#if APP_CFG_UC == APP_CFG_UC_ESP8266
     else if (strncmp(m_bufferRx, StaticIp, strlen(StaticIp)) == 0)
     {
         if (StaticIpChange() == true)
@@ -298,7 +297,8 @@ void WmcCli::HelpScreen(void)
     Serial.println("ssid <>         : Set SSID name (Wifi) to connect to.");
     Serial.println("password <>     : Set password (Wifi).");
     Serial.println("z21 a.b.c.d     : Set IP address of Z21 control.");
-    Serial.println("static x        : Change between DHCP (x=0) and fixed IP address (x=1) of WMC.");
+    Serial.println("static x        : Change between DHCP (x=0) and fixed IP address (x=1) "
+                   "of WMC.");
     Serial.println("ip a.b.c.d      : IP address of WMC when static is active.");
     Serial.println("gateway a.b.c.d : IP gateway to connect to when static is active.");
     Serial.println("subnet a.b.c.d  : IP subnet to connect to when static is active.");
@@ -998,8 +998,8 @@ bool WmcCli::IpGetData(const char* SourcePtr, uint8_t* TargetPtr)
     bool Result   = true;
     uint8_t Index = 0;
 
-    /* s(s)canf is not present, so get digits by locating the dot and getting value from the dot location with
-     * atoi function. */
+    /* s(s)canf is not present, so get digits by locating the dot and getting
+     * value from the dot location with atoi function. */
 
     TargetPtr[0] = atoi(&m_bufferRx[strlen(SourcePtr)]);
     Dot          = &m_bufferRx[strlen(SourcePtr)];
