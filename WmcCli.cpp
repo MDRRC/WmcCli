@@ -966,7 +966,7 @@ void WmcCli::ShowSettings(void)
     {
         Serial.println("Disabled.");
     }
-    Serial.print("Pulse switch invert :");
+    Serial.print("Pulse switch invert : ");
     if (m_LocStorage.PulseSwitchInvertGet() == true)
     {
         Serial.println("Enabled.");
@@ -975,7 +975,7 @@ void WmcCli::ShowSettings(void)
     {
         Serial.println("Disabled.");
     }
-    Serial.print("Turnout auto off    :");
+    Serial.print("Turnout auto off    : ");
     if (m_LocStorage.AutoOffGet() == true)
     {
         Serial.println("Enabled.");
@@ -1017,7 +1017,7 @@ void WmcCli::ShowSettings(void)
     }
     else
     {
-        Serial.println("Static IP          : Disabled.");
+        Serial.println("Static IP           : Disabled.");
     }
 #endif
 }
