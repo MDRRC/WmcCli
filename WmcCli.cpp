@@ -31,6 +31,7 @@ const char* WmcCli::Dump         = "dump";
 const char* WmcCli::Settings     = "settings";
 const char* WmcCli::Reset        = "reset";
 const char* WmcCli::PulseSwitch  = "pulse";
+const char* WmcCli::AutoOff      = "auto_off";
 #if APP_CFG_UC == APP_CFG_UC_ESP8266
 const char* WmcCli::Ssid          = "ssid ";
 const char* WmcCli::Password      = "password ";
@@ -230,6 +231,20 @@ void WmcCli::Process(void)
             Serial.println("Pulse switch direction not inverted.");
         }
         send_event(Event);
+    }
+    else if (strncmp(m_bufferRx, AutoOff, strlen(AutoOff)) == 0)
+    {
+    	if (m_LocStorage.AutoOffGet() == false)
+    	{
+            m_LocStorage.AutoOffSet(1);
+            Serial.println("Turnout auto off enabled.");
+    	}
+    	else
+    	{
+            m_LocStorage.AutoOffSet(0);
+            Serial.println("Turnout auto off disbaled.");
+
+    	}
     }
 #if APP_CFG_UC == APP_CFG_UC_ESP8266
     else if (strncmp(m_bufferRx, StaticIp, strlen(StaticIp)) == 0)
@@ -930,10 +945,10 @@ void WmcCli::ShowSettings(void)
     memset(m_SsidPassword, '\0', sizeof(m_SsidPassword));
 #endif
 
-    Serial.print("Number of locs  : ");
+    Serial.print("Number of locs      : ");
     Serial.println(m_locLib.GetNumberOfLocs());
 
-    Serial.print("Ac control      : ");
+    Serial.print("Ac control          : ");
     if (m_LocStorage.AcOptionGet() == 1)
     {
         Serial.println("On.");
@@ -942,8 +957,26 @@ void WmcCli::ShowSettings(void)
     {
         Serial.println("Off.");
     }
-    Serial.print("Emergency stop  : ");
+    Serial.print("Emergency stop      : ");
     if (m_LocStorage.EmergencyOptionGet() == 1)
+    {
+        Serial.println("Enabled.");
+    }
+    else
+    {
+        Serial.println("Disabled.");
+    }
+    Serial.print("Pulse switch invert :");
+    if (m_LocStorage.PulseSwitchInvertGet() == true)
+    {
+        Serial.println("Enabled.");
+    }
+    else
+    {
+        Serial.println("Disabled.");
+    }
+    Serial.print("Turnout auto off    :");
+    if (m_LocStorage.AutoOffGet() == true)
     {
         Serial.println("Enabled.");
     }
@@ -958,33 +991,33 @@ void WmcCli::ShowSettings(void)
 #else
     /* Get and print the network settings. */
     EEPROM.get(EepCfg::SsidNameAddress, m_SsidName);
-    Serial.print("Ssid            : ");
+    Serial.print("Ssid                : ");
     Serial.println(m_SsidName);
 
     EEPROM.get(EepCfg::SsidPasswordAddress, m_SsidPassword);
-    Serial.print("Password        : ");
+    Serial.print("Password            : ");
     Serial.println(m_SsidPassword);
 
     EEPROM.get(EepCfg::EepIpAddressZ21, m_IpAddressZ21);
-    IpDataPrint("Ip address Z21  : ", m_IpAddressZ21);
+    IpDataPrint("Ip address Z21      : ", m_IpAddressZ21);
 
     Static = EEPROM.read(EepCfg::StaticIpAddress);
     if (Static == 1)
     {
-        Serial.println("Static IP       : Enabled.");
+        Serial.println("Static IP           : Enabled.");
 
         EEPROM.get(EepCfg::EepIpAddressWmc, m_IpAddresWmc);
-        IpDataPrint("Ip address WMC  : ", m_IpAddresWmc);
+        IpDataPrint("Ip address WMC         : ", m_IpAddresWmc);
 
         EEPROM.get(EepCfg::EepIpGateway, m_IpGateway);
-        IpDataPrint("Ip gateway      : ", m_IpGateway);
+        IpDataPrint("Ip gateway             : ", m_IpGateway);
 
         EEPROM.get(EepCfg::EepIpSubnet, m_IpSubnet);
-        IpDataPrint("Ip subnet       : ", m_IpSubnet);
+        IpDataPrint("Ip subnet              : ", m_IpSubnet);
     }
     else
     {
-        Serial.println("Static IP       : Disabled.");
+        Serial.println("Static IP          : Disabled.");
     }
 #endif
 }
