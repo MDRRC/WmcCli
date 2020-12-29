@@ -234,17 +234,17 @@ void WmcCli::Process(void)
     }
     else if (strncmp(m_bufferRx, AutoOff, strlen(AutoOff)) == 0)
     {
-    	if (m_LocStorage.AutoOffGet() == false)
-    	{
+        if (m_LocStorage.AutoOffGet() == false)
+        {
             m_LocStorage.AutoOffSet(1);
             Serial.println("Turnout auto off enabled.");
-    	}
-    	else
-    	{
+        }
+        else
+        {
             m_LocStorage.AutoOffSet(0);
-            Serial.println("Turnout auto off disbaled.");
-
-    	}
+            Serial.println("Turnout auto off disabled.");
+        }
+        send_event(Event);
     }
 #if APP_CFG_UC == APP_CFG_UC_ESP8266
     else if (strncmp(m_bufferRx, StaticIp, strlen(StaticIp)) == 0)
@@ -306,6 +306,7 @@ void WmcCli::HelpScreen(void)
     Serial.println("list            : Show all programmed locs.");
     Serial.println("dump            : Dump data for backup.");
     Serial.println("pulse           : Invert pulse switch direction.");
+    Serial.println("auto_off        : Send off command to turnouts.");
 #if APP_CFG_UC == APP_CFG_UC_ESP8266
     Serial.println("adc             : Invalidate ADC button values.");
     Serial.println("buttons         : Show ADC value for each button.");
